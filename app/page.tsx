@@ -75,16 +75,18 @@ export default function Home() {
   // floating status
   const statusLines = useMemo(
     () => [
-      "status: missing you (a noticeable amount)",
-      "status: attention stolen by your smile",
-      "status: currently smiling at my phone",
-      "status: thinking about you (background task)",
-      "status: acting normal (failed)",
-      "status: passenger princess mode enabled",
-      "status: waiting for your message (refreshing)",
-      "status: smiling at my phone for no reason",
-      "status: grinning a little too much (suspicious)",
-      "status: distracted but in a good way",
+    "status: waiting for your message (patiently… kind of)",
+    "status: trying to focus (unsuccessful)",
+    "status: smiling at my phone again",
+    "status: missing you (a noticeable amount)",
+    "status: soft thoughts, loud grin",
+    "status: you’re living in my head (rent-free)",
+    "status: passenger princess mode enabled",
+    "status: accidentally checking my phone too often",
+    "status: calm on the outside, smiling on the inside",
+    "status: acting normal (failed quietly)",
+    "status: currently a little too happy about you",
+    "status: main character energy detected (it’s you)",
     ],
     []
   );
@@ -183,13 +185,13 @@ export default function Home() {
     titleTop: "unofficial • fan-made",
     titleBottom: "cute-coded • roast privileges enabled",
     body: [
-      "i made this because talking to avni is dangerously fun.",
+      "talking to you is dangerously fun.",
       "like… blink-and-it’s-been-hours fun.",
       "and yes: her eyes are an unfair advantage and her smile is a reset button.",
       
       "disclaimer: this is not me being dramatic (ok maybe a bit).",
-      "i’m just leaning into the fact that you’re cute and i like being around you.",
-      "also: you can tease me about this. you’ve earned it.i made this because talking to avni is dangerously fun.",
+      "i’m just leaning into the fact that you’re cute.",
+      "also: you get teasing privileges.",
     ],
   };
 
@@ -213,17 +215,17 @@ export default function Home() {
   ];
 
   const redFlags = [
-    "banter too strong (i am not insured for this)",
+    "bullying as a love language (i am not insured for this)",
     "may permanently ruin my tolerance for boring conversation",
     "driving lore includes a scratched car (character development arc)",
     "likely to win the ‘who’s cuter’ argument forever",
   ];
 
   const knownBugs = [
-    "may cause me to smile at my phone like i’m new here",
+    "may cause me to smile at my phone like i’m an idiot",
     "background process: thinking about you (cannot terminate)",
     "driver module: under construction (passenger princess mode: fully supported)",
-    "may reply instantly (humiliating)",
+    "may reply instantly",
   ];
 
   const references: Review[] = [
@@ -327,80 +329,136 @@ export default function Home() {
 
       {/* floating status tab (right, follows scroll) */}
       {!showIntro && (
-        <div
+        <motion.div
+          initial={{ opacity: 0, x: 18 }}
+          animate={{
+            opacity: 1,
+            x: 0,
+            y: statusFlash ? [0, -6, 0] : [0, -5, 0], // subtle bobbing
+          }}
+          transition={{
+            duration: statusFlash ? 0.35 : 3.2,
+            repeat: statusFlash ? 0 : Infinity,
+            ease: "easeInOut",
+          }}
           style={{
             position: "fixed",
             right: 18,
             top: 120,
             zIndex: 50,
-            width: 240,
-            maxWidth: "70vw",
+            width: 260,
+            maxWidth: "74vw",
             borderRadius: 18,
             padding: 12,
             border: `1px solid ${statusFlash ? palette.borderStrong : palette.border}`,
-            background: statusFlash ? palette.accentSoft : "rgba(0,0,0,0.38)",
+            background: statusFlash ? palette.accentSoft : "rgba(0,0,0,0.40)",
             boxShadow: statusFlash
-              ? "0 18px 55px rgba(0,0,0,0.55)"
+              ? "0 18px 70px rgba(0,0,0,0.65)"
               : "0 14px 45px rgba(0,0,0,0.45)",
             backdropFilter: "blur(12px)",
-            transition: "all 260ms ease",
+            transition: "border-color 220ms ease, box-shadow 220ms ease, background 220ms ease",
+            overflow: "hidden",
           }}
         >
-          <div style={{ fontSize: 11, color: palette.muted, letterSpacing: 0.2 }}>
-            current status
+          {/* top row */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+            <div style={{ fontSize: 11, color: palette.muted, letterSpacing: 0.25 }}>
+              current status
+            </div>
+
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "4px 8px",
+                borderRadius: 999,
+                border: `1px solid ${palette.border}`,
+                background: "rgba(0,0,0,0.22)",
+                fontSize: 10,
+                color: palette.muted,
+                userSelect: "none",
+              }}
+            >
+              <span
+                style={{
+                  width: 7,
+                  height: 7,
+                  borderRadius: 999,
+                  background: "rgba(34,197,94,0.95)",
+                  boxShadow: "0 0 12px rgba(34,197,94,0.35)",
+                  animation: "pulseDot 1.4s ease-in-out infinite",
+                }}
+              />
+              live
+            </div>
           </div>
-          <div
+
+          {/* status text */}
+          <motion.div
+            key={statusIdx}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.28 }}
             style={{
-              marginTop: 8,
+              marginTop: 10,
               fontSize: 13,
               lineHeight: 1.5,
               color: palette.text,
             }}
           >
             {statusLines[statusIdx]}
+          </motion.div>
+
+          {/* tiny “update” hint */}
+          <div
+            style={{
+              marginTop: 10,
+              fontSize: 10,
+              color: palette.muted,
+              opacity: statusFlash ? 1 : 0.65,
+              transition: "opacity 220ms ease",
+            }}
+          >
+            {statusFlash ? "updated just now" : "updating automatically"}
           </div>
 
-          <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
-            <button
-              onClick={() => {
-                setStatusIdx((i) => (i + 1) % statusLines.length);
-                setStatusFlash(true);
-                setTimeout(() => setStatusFlash(false), 380);
-              }}
+          {/* progress bar (fills between updates) */}
+          <div
+            style={{
+              marginTop: 10,
+              height: 6,
+              borderRadius: 999,
+              background: "rgba(255,255,255,0.08)",
+              overflow: "hidden",
+            }}
+          >
+            <div
               style={{
-                borderRadius: 999,
-                padding: "6px 10px",
-                border: `1px solid ${palette.border}`,
-                background: "rgba(0,0,0,0.26)",
-                color: palette.text,
-                fontSize: 12,
-                cursor: "pointer",
+                height: "100%",
+                width: "100%",
+                transformOrigin: "left",
+                animation: "statusBar 8.5s linear infinite",
+                background: palette.accent,
+                opacity: 0.85,
               }}
-            >
-              next
-            </button>
-
-            <button
-              onClick={() => {
-                setTheme((t) => (t === "berry" ? "lavender" : t === "lavender" ? "midnight" : "berry"));
-                setToast("theme swapped.");
-                setTimeout(() => setToast(null), 900);
-              }}
-              style={{
-                borderRadius: 999,
-                padding: "6px 10px",
-                border: `1px solid ${palette.border}`,
-                background: "rgba(0,0,0,0.26)",
-                color: palette.text,
-                fontSize: 12,
-                cursor: "pointer",
-              }}
-            >
-              vibe
-            </button>
+            />
           </div>
-        </div>
+
+          {/* local keyframes */}
+          <style>{`
+            @keyframes pulseDot {
+              0%, 100% { transform: scale(1); opacity: 0.8; }
+              50% { transform: scale(1.18); opacity: 1; }
+            }
+            @keyframes statusBar {
+              0% { transform: scaleX(0); }
+              100% { transform: scaleX(1); }
+            }
+          `}</style>
+        </motion.div>
       )}
+
 
       <main
         style={{
