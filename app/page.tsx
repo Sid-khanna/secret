@@ -72,6 +72,58 @@ export default function Home() {
   const [secretUnlocked, setSecretUnlocked] = useState(false);
   const SECRET_PASSWORD = "mypassengerprincess";
 
+    // date picker
+  const dateOptions = useMemo(
+    () => [
+      "activate",
+      "bubble planet",
+      "trampoline park",
+      "late-night drive + music",
+      "movie night",
+      "paint splatter",
+      "rage room",
+      "battleground",
+      "pursuit",
+      "dinner + drinks",
+      "rec room",
+      "bowling",
+      "mini golf",
+    ],
+    []
+  );
+
+  const [dateMode, setDateMode] = useState<"choose" | "random">("choose");
+  const [pickedDate, setPickedDate] = useState<string | null>(null);
+  const [spinning, setSpinning] = useState(false);
+
+  function chooseDate(date: string) {
+    setDateMode("choose");
+    setPickedDate(date);
+    setToast("locked in ✅");
+    setTimeout(() => setToast(null), 1000);
+  }
+
+  function surpriseMe() {
+    setDateMode("random");
+    setSpinning(true);
+
+    const spins = 14;
+    let i = 0;
+
+    const t = setInterval(() => {
+      setPickedDate(pick(dateOptions));
+      i++;
+      if (i >= spins) {
+        clearInterval(t);
+        setSpinning(false);
+        setToast("locked in ✅");
+        setTimeout(() => setToast(null), 1000);
+      }
+    }, 90);
+  }
+
+  
+
   // floating status
   const statusLines = useMemo(
     () => [
@@ -202,8 +254,6 @@ export default function Home() {
     "eye contact that should come with a warning label",
     "passenger princess experiences (i drive, you pick the music)",
     "laughing enough that i forget to act cool",
-    "a vibe that makes me try harder on purpose (annoying but true)",
-    "soft chaos (optional). teasing (encouraged).",
   ];
 
   const greenFlags = [
@@ -658,20 +708,21 @@ export default function Home() {
                 bg={palette.card}
               >
                 {!secretUnlocked ? (
-                  <div style={{ display: "grid", gap: 10, maxWidth: 520 }}>
+                  <div style={{ display: "grid", gap: 10, width: "100%" }}>
                     <div style={{ fontSize: 13, color: palette.muted, lineHeight: 1.6 }}>
                       if you’re here, you get the little secret message.
                       it’s not deep. just… genuinely sweet.
                     </div>
 
-                    <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                    <div style={{ display: "flex", gap: 10, flexWrap: "wrap", width: "100%" }}>
                       <input
                         value={secretInput}
                         onChange={(e) => setSecretInput(e.target.value)}
                         placeholder="password"
                         spellCheck={false}
                         style={{
-                          flex: "1 1 260px",
+                          flex: "1 1 420px",
+                          width: "100%",
                           padding: "10px 12px",
                           borderRadius: 14,
                           border: `1px solid ${palette.border}`,
@@ -754,6 +805,86 @@ export default function Home() {
                   </motion.div>
 
                 )}
+              </InfoCard>
+
+                            {/* date picker (below private) */}
+              <InfoCard
+                title="pick our next date"
+                subtitle="your choice… or you can make me choose."
+                border={palette.borderStrong}
+                bg={palette.card}
+              >
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                  <PrimaryButton
+                    onClick={() => setDateMode("choose")}
+                    accent={palette.accent}
+                  >
+                    you choose
+                  </PrimaryButton>
+
+                  <GhostButton
+                    onClick={surpriseMe}
+                    border={palette.border}
+                    text={palette.text}
+                  >
+                    surprise me
+                  </GhostButton>
+
+                  {pickedDate && (
+                    <GhostButton
+                      onClick={() => {
+                        setPickedDate(null);
+                        setToast("cleared.");
+                        setTimeout(() => setToast(null), 900);
+                      }}
+                      border={palette.border}
+                      text={palette.text}
+                    >
+                      clear
+                    </GhostButton>
+                  )}
+                </div>
+
+                <div style={{ marginTop: 12 }}>
+                  <div style={{ fontSize: 12, color: palette.muted, marginBottom: 10 }}>
+                    tap a bubble and it’s locked in.
+                  </div>
+
+                  <TileGrid
+                    items={dateOptions}
+                    selectedIndex={pickedDate ? dateOptions.indexOf(pickedDate) : null}
+                    onItemClick={(idx) => chooseDate(dateOptions[idx])}
+                  />
+
+                  {(spinning || pickedDate) && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.35, ease: "easeOut" }}
+                      style={{
+                        marginTop: 12,
+                        borderRadius: 16,
+                        border: `1px solid ${palette.border}`,
+                        background: palette.accentSoft,
+                        padding: 12,
+                        maxWidth: 720,
+                        boxShadow: "0 14px 45px rgba(0,0,0,0.35)",
+                      }}
+                    >
+                      <div style={{ fontSize: 12, color: palette.muted }}>
+                        {spinning ? "calculating vibes..." : "locked in"}
+                      </div>
+                      <div style={{ marginTop: 6, fontSize: 16, fontWeight: 900 }}>
+                        {pickedDate ?? "…"}
+                      </div>
+                      {!spinning && pickedDate && (
+                        <div style={{ marginTop: 6, fontSize: 13, color: palette.muted }}>
+                          i’ll drive. you pick the vibe. 🤝
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
+                </div>
               </InfoCard>
             </section>
 
@@ -904,7 +1035,16 @@ function InfoCard({
  * - lift + glow on hover
  * - optional subtle gradient highlight following cursor
  */
-function TileGrid({ items }: { items: string[] }) {
+function TileGrid({
+  items,
+  onItemClick,
+  selectedIndex,
+}: {
+  items: string[];
+  onItemClick?: (idx: number) => void;
+  selectedIndex?: number | null;
+}) {
+
   const [hovered, setHovered] = useState<number | null>(null);
   const [pos, setPos] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
 
