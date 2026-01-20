@@ -329,136 +329,80 @@ export default function Home() {
 
       {/* floating status tab (right, follows scroll) */}
       {!showIntro && (
-        <motion.div
-          initial={{ opacity: 0, x: 18 }}
-          animate={{
-            opacity: 1,
-            x: 0,
-            y: statusFlash ? [0, -6, 0] : [0, -5, 0], // subtle bobbing
-          }}
-          transition={{
-            duration: statusFlash ? 0.35 : 3.2,
-            repeat: statusFlash ? 0 : Infinity,
-            ease: "easeInOut",
-          }}
+        <div
           style={{
             position: "fixed",
             right: 18,
             top: 120,
             zIndex: 50,
-            width: 260,
-            maxWidth: "74vw",
+            width: 240,
+            maxWidth: "70vw",
             borderRadius: 18,
             padding: 12,
             border: `1px solid ${statusFlash ? palette.borderStrong : palette.border}`,
-            background: statusFlash ? palette.accentSoft : "rgba(0,0,0,0.40)",
+            background: statusFlash ? palette.accentSoft : "rgba(0,0,0,0.38)",
             boxShadow: statusFlash
-              ? "0 18px 70px rgba(0,0,0,0.65)"
+              ? "0 18px 55px rgba(0,0,0,0.55)"
               : "0 14px 45px rgba(0,0,0,0.45)",
             backdropFilter: "blur(12px)",
-            transition: "border-color 220ms ease, box-shadow 220ms ease, background 220ms ease",
-            overflow: "hidden",
+            transition: "all 260ms ease",
           }}
         >
-          {/* top row */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-            <div style={{ fontSize: 11, color: palette.muted, letterSpacing: 0.25 }}>
-              current status
-            </div>
-
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                padding: "4px 8px",
-                borderRadius: 999,
-                border: `1px solid ${palette.border}`,
-                background: "rgba(0,0,0,0.22)",
-                fontSize: 10,
-                color: palette.muted,
-                userSelect: "none",
-              }}
-            >
-              <span
-                style={{
-                  width: 7,
-                  height: 7,
-                  borderRadius: 999,
-                  background: "rgba(34,197,94,0.95)",
-                  boxShadow: "0 0 12px rgba(34,197,94,0.35)",
-                  animation: "pulseDot 1.4s ease-in-out infinite",
-                }}
-              />
-              live
-            </div>
+          <div style={{ fontSize: 11, color: palette.muted, letterSpacing: 0.2 }}>
+            current status
           </div>
-
-          {/* status text */}
-          <motion.div
-            key={statusIdx}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.28 }}
+          <div
             style={{
-              marginTop: 10,
+              marginTop: 8,
               fontSize: 13,
               lineHeight: 1.5,
               color: palette.text,
             }}
           >
             {statusLines[statusIdx]}
-          </motion.div>
-
-          {/* tiny “update” hint */}
-          <div
-            style={{
-              marginTop: 10,
-              fontSize: 10,
-              color: palette.muted,
-              opacity: statusFlash ? 1 : 0.65,
-              transition: "opacity 220ms ease",
-            }}
-          >
-            {statusFlash ? "updated just now" : "updating automatically"}
           </div>
 
-          {/* progress bar (fills between updates) */}
-          <div
-            style={{
-              marginTop: 10,
-              height: 6,
-              borderRadius: 999,
-              background: "rgba(255,255,255,0.08)",
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                height: "100%",
-                width: "100%",
-                transformOrigin: "left",
-                animation: "statusBar 8.5s linear infinite",
-                background: palette.accent,
-                opacity: 0.85,
+          <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <button
+              onClick={() => {
+                setStatusIdx((i) => (i + 1) % statusLines.length);
+                setStatusFlash(true);
+                setTimeout(() => setStatusFlash(false), 380);
               }}
-            />
+              style={{
+                borderRadius: 999,
+                padding: "6px 10px",
+                border: `1px solid ${palette.border}`,
+                background: "rgba(0,0,0,0.26)",
+                color: palette.text,
+                fontSize: 12,
+                cursor: "pointer",
+              }}
+            >
+              next
+            </button>
+
+            <button
+              onClick={() => {
+                setTheme((t) => (t === "berry" ? "lavender" : t === "lavender" ? "midnight" : "berry"));
+                setToast("theme swapped.");
+                setTimeout(() => setToast(null), 900);
+              }}
+              style={{
+                borderRadius: 999,
+                padding: "6px 10px",
+                border: `1px solid ${palette.border}`,
+                background: "rgba(0,0,0,0.26)",
+                color: palette.text,
+                fontSize: 12,
+                cursor: "pointer",
+              }}
+            >
+              vibe
+            </button>
           </div>
-
-          {/* local keyframes */}
-          <style>{`
-            @keyframes pulseDot {
-              0%, 100% { transform: scale(1); opacity: 0.8; }
-              50% { transform: scale(1.18); opacity: 1; }
-            }
-            @keyframes statusBar {
-              0% { transform: scaleX(0); }
-              100% { transform: scaleX(1); }
-            }
-          `}</style>
-        </motion.div>
+        </div>
       )}
-
 
       <main
         style={{
