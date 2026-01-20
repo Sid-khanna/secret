@@ -75,14 +75,16 @@ export default function Home() {
   // floating status
   const statusLines = useMemo(
     () => [
+      "status: missing you (a noticeable amount)",
+      "status: attention stolen by your smile",
+      "status: currently smiling at my phone",
       "status: thinking about you (background task)",
       "status: acting normal (failed)",
-      "status: banter tolerance exceeded",
-      "status: passenger princess mode: enabled",
-      "status: missing you a little (rude)",
-      "status: attention stolen by your smile",
-      "status: eye contact firewall: offline",
-      "status: currently smiling at my phone",
+      "status: passenger princess mode enabled",
+      "status: waiting for your message (refreshing)",
+      "status: smiling at my phone for no reason",
+      "status: grinning a little too much (suspicious)",
+      "status: distracted but in a good way",
     ],
     []
   );
@@ -184,10 +186,10 @@ export default function Home() {
       "i made this because talking to avni is dangerously fun.",
       "like… blink-and-it’s-been-hours fun.",
       "and yes: her eyes are an unfair advantage and her smile is a reset button.",
-      "",
-      "disclaimer: not a proposal. not a contract. not a “we’re married now” situation.",
-      "just me leaning into the bit because she’s cute and the vibe is criminal.",
-      "also: you can tease me about this. you’ve earned it.",
+      
+      "disclaimer: this is not me being dramatic (ok maybe a bit).",
+      "i’m just leaning into the fact that you’re cute and i like being around you.",
+      "also: you can tease me about this. you’ve earned it.i made this because talking to avni is dangerously fun.",
     ],
   };
 
@@ -196,8 +198,6 @@ export default function Home() {
     "conversations that turn into 3-hour marathons by accident",
     "the way you tease me and somehow it still feels safe",
     "eye contact that should come with a warning label",
-    "being around you feels… easy. like it’s not work.",
-    "cute plans that feel effortless to make",
     "passenger princess experiences (i drive, you pick the music)",
     "laughing enough that i forget to act cool",
     "a vibe that makes me try harder on purpose (annoying but true)",
@@ -206,8 +206,8 @@ export default function Home() {
 
   const greenFlags = [
     "funny without trying too hard (rare)",
-    "cute but also genuinely sharp",
-    "you listen like you actually care",
+    "deadly cute but also genuinely sharp",
+    "listen like you actually care",
     "teasing that’s gentle but lethal",
     "makes me want to show up better (unfair but appreciated)",
   ];
@@ -217,13 +217,11 @@ export default function Home() {
     "may permanently ruin my tolerance for boring conversation",
     "driving lore includes a scratched car (character development arc)",
     "likely to win the ‘who’s cuter’ argument forever",
-    "makes me miss you when you’re not even here (rude)",
   ];
 
   const knownBugs = [
     "may cause me to smile at my phone like i’m new here",
     "background process: thinking about you (cannot terminate)",
-    "side effect: random songs become ‘about you’",
     "driver module: under construction (passenger princess mode: fully supported)",
     "may reply instantly (humiliating)",
   ];
@@ -266,13 +264,6 @@ export default function Home() {
       "this connection is starting to feel like a canon event.",
       "respectfully, i’m losing the ‘act normal’ challenge.",
       "release notes: avni has broken my focus and my standards.",
-    ],
-    closers: [
-      "anyway. hi.",
-      "ok your turn. what are you up to?",
-      "tell me something funny right now.",
-      "so… when do i get to see you again?",
-      "i’ll stop flirting now. maybe.",
     ],
   };
 
