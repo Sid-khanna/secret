@@ -265,6 +265,13 @@ export default function Home() {
       "respectfully, i’m losing the ‘act normal’ challenge.",
       "release notes: avni has broken my focus and my standards.",
     ],
+    closers: [
+      "anyway. hi.",
+      "ok your turn. what are you up to?",
+      "tell me something funny right now.",
+      "so… when do i get to see you again?",
+      "i’ll stop flirting now. maybe.",
+    ],
   };
 
   function generate() {
