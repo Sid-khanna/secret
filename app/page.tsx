@@ -14,7 +14,7 @@ function pick<T>(arr: T[]) {
 
 const terminalLines = [
   "Booting Avni Connection OS...",
-  "Loading: banter engine ✅",
+  "Loading: cute distraction system ✅",
   "Installing: eye-contact firewall ❌ (failed)",
   "Calibrating: teasing tolerance... low but improving",
   "Driver module: pending (passenger princess mode enabled)",
@@ -361,46 +361,6 @@ export default function Home() {
           >
             {statusLines[statusIdx]}
           </div>
-
-          <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
-            <button
-              onClick={() => {
-                setStatusIdx((i) => (i + 1) % statusLines.length);
-                setStatusFlash(true);
-                setTimeout(() => setStatusFlash(false), 380);
-              }}
-              style={{
-                borderRadius: 999,
-                padding: "6px 10px",
-                border: `1px solid ${palette.border}`,
-                background: "rgba(0,0,0,0.26)",
-                color: palette.text,
-                fontSize: 12,
-                cursor: "pointer",
-              }}
-            >
-              next
-            </button>
-
-            <button
-              onClick={() => {
-                setTheme((t) => (t === "berry" ? "lavender" : t === "lavender" ? "midnight" : "berry"));
-                setToast("theme swapped.");
-                setTimeout(() => setToast(null), 900);
-              }}
-              style={{
-                borderRadius: 999,
-                padding: "6px 10px",
-                border: `1px solid ${palette.border}`,
-                background: "rgba(0,0,0,0.26)",
-                color: palette.text,
-                fontSize: 12,
-                cursor: "pointer",
-              }}
-            >
-              vibe
-            </button>
-          </div>
         </div>
       )}
 
@@ -735,27 +695,47 @@ export default function Home() {
                   </div>
                 ) : (
                   <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.35 }}
+                    initial={{ opacity: 0, y: 12, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ duration: 0.42, ease: "easeOut" }}
                     style={{
+                      position: "relative",
                       borderRadius: 16,
                       border: `1px solid ${palette.border}`,
                       background: palette.accentSoft,
                       padding: 14,
                       maxWidth: 720,
+                      overflow: "hidden",
+                      boxShadow: "0 18px 60px rgba(0,0,0,0.45)",
                     }}
                   >
-                    <div style={{ fontSize: 12, color: palette.muted }}>unlocked</div>
-                    <div style={{ marginTop: 8, fontSize: 15, lineHeight: 1.75, color: palette.text }}>
+                    <SparkleBurst />
+
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.15, duration: 0.35 }}
+                      style={{ fontSize: 12, color: palette.muted }}
+                    >
+                      unlocked
+                    </motion.div>
+
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2, duration: 0.4, ease: "easeOut" }}
+                      style={{ marginTop: 8, fontSize: 15, lineHeight: 1.75, color: palette.text }}
+                    >
                       ok. hi.
                       <br />
-                      i know this whole site is a joke, but you aren’t.
+                      i’m not great at saying things without hiding behind a bit, so i’ll just say it clean:
                       <br />
-                      you’re genuinely special to be around, and i love the way you make things feel easy.
+                      being around you feels warm. like my day gets lighter on purpose.
                       <br />
-                      if you ever forget that, i’ll remind you. every time.
-                    </div>
+                      you make me smile when i’m alone. you make me feel seen when we’re together.
+                      <br />
+                      and if you ever forget how lovable you are, i’ll be annoyingly consistent about reminding you.
+                    </motion.div>
 
                     <div style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}>
                       <GhostButton
@@ -772,6 +752,7 @@ export default function Home() {
                       </GhostButton>
                     </div>
                   </motion.div>
+
                 )}
               </InfoCard>
             </section>
@@ -1035,5 +1016,38 @@ function GhostButton({
     >
       {children}
     </button>
+  );
+}
+
+function SparkleBurst() {
+  const dots = Array.from({ length: 10 });
+
+  return (
+    <div style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
+      {dots.map((_, i) => (
+        <motion.span
+          key={i}
+          initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
+          animate={{
+            opacity: [0, 1, 0],
+            scale: [0, 1, 0.6],
+            x: (Math.cos((i / dots.length) * Math.PI * 2) * 90) | 0,
+            y: (Math.sin((i / dots.length) * Math.PI * 2) * 55) | 0,
+          }}
+          transition={{ duration: 0.7, ease: "easeOut", delay: i * 0.02 }}
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            width: 6,
+            height: 6,
+            borderRadius: 999,
+            background: "rgba(255,255,255,0.85)",
+            boxShadow: "0 0 18px rgba(244,114,182,0.35)",
+            transform: "translate(-50%, -50%)",
+          }}
+        />
+      ))}
+    </div>
   );
 }
