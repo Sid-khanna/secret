@@ -92,6 +92,23 @@ export default function Home() {
     []
   );
 
+  const dateDescriptions = {
+  "activate": "competitive but cute. i will try to win. i will probably lose on purpose.",
+  "bubble planet": "we walk around taking pics and pretending we’re not obsessed with the vibes.",
+  "trampoline park": "chaos cardio. i’m prepared to embarrass myself for the bit.",
+  "late-night drive + music": "windows down, city lights, playlist diplomacy (you win).",
+  "movie night": "blanket + snacks + i’m sitting too close by accident.",
+  "paint splatter": "we create modern art and also a mess. iconic.",
+  "rage room": "healing, but loud. afterwards: calm food.",
+  "battleground": "soft trash talk. intense teamwork. victory pose required.",
+  "pursuit": "running around like main characters. i’m not built for stealth but i’ll try.",
+  "dinner + drinks": "easy. pretty. let’s just talk until the place closes.",
+  "rec room": "games + prizes + me trying to win you something stupid and cute.",
+  "bowling": "you look cute when you’re locked in. i’m prepared to be humbled.",
+  "mini golf": "flirting disguised as sports. the score is fake anyway.",
+};
+
+
   const [dateMode, setDateMode] = useState<"choose" | "random">("choose");
   const [pickedDate, setPickedDate] = useState<string | null>(null);
   const [spinning, setSpinning] = useState(false);
@@ -755,7 +772,8 @@ export default function Home() {
                       border: `1px solid ${palette.border}`,
                       background: palette.accentSoft,
                       padding: 14,
-                      maxWidth: 720,
+                      width: "100%",
+                      maxWidth: "none",
                       overflow: "hidden",
                       boxShadow: "0 18px 60px rgba(0,0,0,0.45)",
                     }}
@@ -779,14 +797,13 @@ export default function Home() {
                     >
                       ok. hi.
                       <br />
-                      i’m not great at saying things without hiding behind a bit, so i’ll just say it clean:
+                      i’ll keep this simple:
                       <br />
-                      being around you feels warm. like my day gets lighter on purpose.
+                      i’ve really liked talking again. it feels easy in a way i forgot it could.
                       <br />
-                      you make me smile when i’m alone. you make me feel seen when we’re together.
-                      <br />
-                      and if you ever forget how lovable you are, i’ll be annoyingly consistent about reminding you.
+                      if you’re down, let’s keep doing this . more dates. more laughs. same vibe.
                     </motion.div>
+
 
                     <div style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}>
                       <GhostButton
@@ -879,7 +896,7 @@ export default function Home() {
                       </div>
                       {!spinning && pickedDate && (
                         <div style={{ marginTop: 6, fontSize: 13, color: palette.muted }}>
-                          i’ll drive. you pick the vibe. 🤝
+                          {dateDescriptions[pickedDate]}
                         </div>
                       )}
                     </motion.div>
@@ -1035,18 +1052,9 @@ function InfoCard({
  * - lift + glow on hover
  * - optional subtle gradient highlight following cursor
  */
-function TileGrid({
-  items,
-  onItemClick,
-  selectedIndex,
-}: {
-  items: string[];
-  onItemClick?: (idx: number) => void;
-  selectedIndex?: number | null;
-}) {
-
-  const [hovered, setHovered] = useState<number | null>(null);
-  const [pos, setPos] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
+function TileGrid({ items, onItemClick, selectedIndex }) {
+  const [hovered, setHovered] = useState(null);
+  const [pos, setPos] = useState({ x: 50, y: 50 });
 
   return (
     <div
@@ -1058,14 +1066,22 @@ function TileGrid({
     >
       {items.map((x, idx) => {
         const isHover = hovered === idx;
+        const isSelected = selectedIndex === idx;
 
         return (
           <div
             key={`${x}-${idx}`}
+            role={onItemClick ? "button" : undefined}
+            tabIndex={onItemClick ? 0 : undefined}
+            onClick={() => onItemClick && onItemClick(idx)}
+            onKeyDown={(e) => {
+              if (!onItemClick) return;
+              if (e.key === "Enter" || e.key === " ") onItemClick(idx);
+            }}
             onMouseEnter={() => setHovered(idx)}
             onMouseLeave={() => setHovered(null)}
             onMouseMove={(e) => {
-              const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
+              const rect = e.currentTarget.getBoundingClientRect();
               const px = ((e.clientX - rect.left) / rect.width) * 100;
               const py = ((e.clientY - rect.top) / rect.height) * 100;
               setPos({ x: px, y: py });
@@ -1073,7 +1089,10 @@ function TileGrid({
             style={{
               padding: "12px 14px",
               borderRadius: 16,
-              border: isHover ? "1px solid rgba(255,255,255,0.22)" : "1px solid rgba(255,255,255,0.12)",
+              border:
+                isSelected || isHover
+                  ? "1px solid rgba(255,255,255,0.26)"
+                  : "1px solid rgba(255,255,255,0.12)",
               fontSize: 14,
               lineHeight: 1.6,
               color: "rgba(255,255,255,0.92)",
@@ -1083,13 +1102,19 @@ function TileGrid({
               overflowWrap: "anywhere",
               wordBreak: "break-word",
               whiteSpace: "normal",
-              cursor: "default",
+              cursor: onItemClick ? "pointer" : "default",
+              userSelect: "none",
               transform: isHover ? "translateY(-2px)" : "translateY(0px)",
-              boxShadow: isHover ? "0 16px 40px rgba(0,0,0,0.35)" : "0 10px 28px rgba(0,0,0,0.22)",
-              transition: "transform 140ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease",
-              background: isHover
-                ? `radial-gradient(420px circle at ${pos.x}% ${pos.y}%, rgba(255,255,255,0.12), rgba(255,255,255,0.06) 45%, rgba(255,255,255,0.045) 80%)`
-                : "rgba(255,255,255,0.06)",
+              boxShadow:
+                isSelected || isHover
+                  ? "0 16px 40px rgba(0,0,0,0.35)"
+                  : "0 10px 28px rgba(0,0,0,0.22)",
+              transition:
+                "transform 140ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease",
+              background:
+                isSelected || isHover
+                  ? `radial-gradient(420px circle at ${pos.x}% ${pos.y}%, rgba(255,255,255,0.14), rgba(255,255,255,0.07) 45%, rgba(255,255,255,0.05) 80%)`
+                  : "rgba(255,255,255,0.06)",
             }}
           >
             {x}
@@ -1099,6 +1124,7 @@ function TileGrid({
     </div>
   );
 }
+
 
 function PrimaryButton({
   onClick,
