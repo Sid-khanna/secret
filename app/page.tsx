@@ -6,6 +6,41 @@ import { motion } from "framer-motion";
 type Theme = "berry" | "lavender" | "midnight";
 type Review = { from: string; text: string; stars?: number };
 
+const dateOptions = [
+  "activate",
+  "bubble planet",
+  "trampoline park",
+  "late-night drive + music",
+  "movie night",
+  "paint splatter",
+  "rage room",
+  "battleground",
+  "pursuit",
+  "dinner + drinks",
+  "rec room",
+  "bowling",
+  "mini golf",
+] as const;
+
+type DateOption = (typeof dateOptions)[number];
+
+const dateDescriptions: Record<DateOption, string> = {
+  "activate": "competitive but cute. i will try to win. i will probably lose on purpose.",
+  "bubble planet": "we walk around taking pics and pretending we’re not obsessed with the vibes.",
+  "trampoline park": "chaos cardio. i’m prepared to embarrass myself for the bit.",
+  "late-night drive + music": "windows down, city lights, playlist diplomacy (you win).",
+  "movie night": "blanket + snacks + i’m sitting too close by accident.",
+  "paint splatter": "we create modern art and also a mess. iconic.",
+  "rage room": "healing, but loud. afterwards: calm food.",
+  "battleground": "soft trash talk. intense teamwork. victory pose required.",
+  "pursuit": "running around like main characters. i’m not built for stealth but i’ll try.",
+  "dinner + drinks": "easy. pretty. let’s just talk until the place closes.",
+  "rec room": "games + prizes + me trying to win you something stupid and cute.",
+  "bowling": "you look cute when you’re locked in. i’m prepared to be humbled.",
+  "mini golf": "flirting disguised as sports. the score is fake anyway.",
+};
+
+
 function pick<T>(arr: T[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -72,48 +107,12 @@ export default function Home() {
   const [secretUnlocked, setSecretUnlocked] = useState(false);
   const SECRET_PASSWORD = "mypassengerprincess";
 
-    // date picker
-  const dateOptions = useMemo(
-    () => [
-      "activate",
-      "bubble planet",
-      "trampoline park",
-      "late-night drive + music",
-      "movie night",
-      "paint splatter",
-      "rage room",
-      "battleground",
-      "pursuit",
-      "dinner + drinks",
-      "rec room",
-      "bowling",
-      "mini golf",
-    ],
-    []
-  );
-
-  const dateDescriptions = {
-  "activate": "competitive but cute. i will try to win. i will probably lose on purpose.",
-  "bubble planet": "we walk around taking pics and pretending we’re not obsessed with the vibes.",
-  "trampoline park": "chaos cardio. i’m prepared to embarrass myself for the bit.",
-  "late-night drive + music": "windows down, city lights, playlist diplomacy (you win).",
-  "movie night": "blanket + snacks + i’m sitting too close by accident.",
-  "paint splatter": "we create modern art and also a mess. iconic.",
-  "rage room": "healing, but loud. afterwards: calm food.",
-  "battleground": "soft trash talk. intense teamwork. victory pose required.",
-  "pursuit": "running around like main characters. i’m not built for stealth but i’ll try.",
-  "dinner + drinks": "easy. pretty. let’s just talk until the place closes.",
-  "rec room": "games + prizes + me trying to win you something stupid and cute.",
-  "bowling": "you look cute when you’re locked in. i’m prepared to be humbled.",
-  "mini golf": "flirting disguised as sports. the score is fake anyway.",
-};
-
 
   const [dateMode, setDateMode] = useState<"choose" | "random">("choose");
-  const [pickedDate, setPickedDate] = useState<string | null>(null);
+  const [pickedDate, setPickedDate] = useState<DateOption | null>(null);
   const [spinning, setSpinning] = useState(false);
 
-  function chooseDate(date: string) {
+  function chooseDate(date: DateOption) {
     setDateMode("choose");
     setPickedDate(date);
     setToast("locked in ✅");
@@ -868,7 +867,7 @@ export default function Home() {
                   </div>
 
                   <TileGrid
-                    items={dateOptions}
+                    items={[...dateOptions]}
                     selectedIndex={pickedDate ? dateOptions.indexOf(pickedDate) : null}
                     onItemClick={(idx) => chooseDate(dateOptions[idx])}
                   />
