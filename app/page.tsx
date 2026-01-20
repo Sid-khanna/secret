@@ -400,7 +400,7 @@ export default function Home() {
           style={{
             position: "fixed",
             right: 18,
-            top: 120,
+            bottom: 40,
             zIndex: 50,
             width: 240,
             maxWidth: "70vw",
