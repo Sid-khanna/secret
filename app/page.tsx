@@ -416,7 +416,7 @@ export default function Home() {
           }}
         >
           <div style={{ fontSize: 11, color: palette.muted, letterSpacing: 0.2 }}>
-            current status
+            Sid's current status
           </div>
           <div
             style={{
