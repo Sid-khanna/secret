@@ -41,9 +41,10 @@ const dateDescriptions: Record<DateOption, string> = {
 };
 
 
-function pick<T>(arr: T[]) {
+function pick<T>(arr: readonly T[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
+
 
 /* ------------------ terminal intro ------------------ */
 
