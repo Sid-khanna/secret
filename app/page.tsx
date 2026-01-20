@@ -801,7 +801,7 @@ export default function Home() {
                       <br />
                       i’ve really liked talking again. it feels easy in a way i forgot it could.
                       <br />
-                      if you’re down, let’s keep doing this . more dates. more laughs. same vibe.
+                      if you’re down, let’s keep doing this. more dates. more laughs. same vibe.
                     </motion.div>
 
 
@@ -1052,8 +1052,16 @@ function InfoCard({
  * - lift + glow on hover
  * - optional subtle gradient highlight following cursor
  */
-function TileGrid({ items, onItemClick, selectedIndex }) {
-  const [hovered, setHovered] = useState(null);
+function TileGrid({
+  items,
+  onItemClick,
+  selectedIndex,
+}: {
+  items: string[];
+  onItemClick?: (idx: number) => void;
+  selectedIndex?: number | null;
+}) {
+  const [hovered, setHovered] = useState<number | null>(null);
   const [pos, setPos] = useState({ x: 50, y: 50 });
 
   return (
@@ -1073,7 +1081,7 @@ function TileGrid({ items, onItemClick, selectedIndex }) {
             key={`${x}-${idx}`}
             role={onItemClick ? "button" : undefined}
             tabIndex={onItemClick ? 0 : undefined}
-            onClick={() => onItemClick && onItemClick(idx)}
+            onClick={() => onItemClick?.(idx)}
             onKeyDown={(e) => {
               if (!onItemClick) return;
               if (e.key === "Enter" || e.key === " ") onItemClick(idx);
@@ -1081,7 +1089,7 @@ function TileGrid({ items, onItemClick, selectedIndex }) {
             onMouseEnter={() => setHovered(idx)}
             onMouseLeave={() => setHovered(null)}
             onMouseMove={(e) => {
-              const rect = e.currentTarget.getBoundingClientRect();
+              const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
               const px = ((e.clientX - rect.left) / rect.width) * 100;
               const py = ((e.clientY - rect.top) / rect.height) * 100;
               setPos({ x: px, y: py });
