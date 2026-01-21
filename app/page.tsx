@@ -345,12 +345,16 @@ export default function Home() {
     ],
   };
 
-  function generate() {
-    const mode = pick(["funny", "flirty", "cute", "sincere", "chaotic"] as const);
-    const body = pick(messagePool[mode]);
-    const close = pick(messagePool.closers);
-    setGenerated(`${body} ${close}`);
-  }
+const [bump, setBump] = useState(0);
+
+function generate() {
+  const mode = pick(["funny", "flirty", "cute", "sincere", "chaotic"] as const);
+  const body = pick(messagePool[mode]);
+  const close = pick(messagePool.closers);
+  setGenerated(`${body} ${close}`);
+  setBump((n) => n + 1);
+}
+
 
   async function copy() {
     try {
@@ -612,29 +616,66 @@ export default function Home() {
                 border={palette.borderStrong}
                 bg={palette.card}
               >
-                <div
+                <motion.div
+                  key={bump}
+                  initial={{ scale: 0.995, opacity: 0.92 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.22, ease: "easeOut" }}
                   style={{
                     borderRadius: 16,
                     border: `1px solid ${palette.border}`,
                     background: palette.card2,
                     padding: 14,
                     boxShadow: "0 12px 36px rgba(0,0,0,0.25)",
+                    position: "relative",
+                    overflow: "hidden",
                   }}
                 >
-                  <div style={{ fontSize: 12, color: palette.muted }}>output</div>
+                  {/* glow sweep */}
+                  <motion.div
+                    key={`glow-${bump}`}
+                    initial={{ x: "-120%" }}
+                    animate={{ x: "120%" }}
+                    transition={{ duration: 0.6, ease: "easeInOut" }}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      height: "100%",
+                      width: "60%",
+                      background:
+                        "linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)",
+                      filter: "blur(8px)",
+                      pointerEvents: "none",
+                    }}
+                  />
+
+                  <div style={{ fontSize: 12, color: palette.muted, position: "relative" }}>
+                    output
+                  </div>
+
+                  {/* premium text */}
                   <div
                     style={{
                       marginTop: 8,
-                      fontSize: 15,
-                      lineHeight: 1.75,
-                      color: palette.text,
+                      fontSize: 16,
+                      lineHeight: 1.8,
+                      letterSpacing: -0.2,
+                      background:
+                        "linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.72))",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      textShadow: "0 10px 30px rgba(0,0,0,0.35)",
                       overflowWrap: "anywhere",
                       wordBreak: "break-word",
+                      position: "relative",
                     }}
                   >
                     {generated}
+                    <span style={{ opacity: 0.55, marginLeft: 6 }}>▍</span>
                   </div>
-                </div>
+                </motion.div>
+
 
                 <div style={{ marginTop: 12, display: "flex", gap: 10, flexWrap: "wrap" }}>
                   <PrimaryButton onClick={generate} accent={palette.accent}>
@@ -1145,9 +1186,16 @@ function PrimaryButton({
   children: React.ReactNode;
   accent: string;
 }) {
+  const [down, setDown] = useState(false);
+
   return (
     <button
       onClick={onClick}
+      onMouseDown={() => setDown(true)}
+      onMouseUp={() => setDown(false)}
+      onMouseLeave={() => setDown(false)}
+      onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-1px)")}
+      onMouseOut={(e) => (e.currentTarget.style.transform = "translateY(0px)")}
       style={{
         padding: "10px 16px",
         borderRadius: 999,
@@ -1157,13 +1205,19 @@ function PrimaryButton({
         fontWeight: 900,
         cursor: "pointer",
         fontSize: 14,
-        boxShadow: "0 14px 38px rgba(0,0,0,0.35)",
+        transform: down ? "translateY(0px) scale(0.99)" : "translateY(0px)",
+        boxShadow: down
+          ? "0 10px 26px rgba(0,0,0,0.30)"
+          : "0 14px 38px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.12)",
+        transition: "transform 140ms ease, box-shadow 140ms ease, filter 140ms ease",
+        filter: down ? "brightness(0.98)" : "brightness(1)",
       }}
     >
       {children}
     </button>
   );
 }
+
 
 function GhostButton({
   onClick,
@@ -1176,24 +1230,41 @@ function GhostButton({
   border: string;
   text: string;
 }) {
+  const [down, setDown] = useState(false);
+  const [hover, setHover] = useState(false);
+
   return (
     <button
       onClick={onClick}
+      onMouseDown={() => setDown(true)}
+      onMouseUp={() => setDown(false)}
+      onMouseLeave={() => {
+        setDown(false);
+        setHover(false);
+      }}
+      onMouseEnter={() => setHover(true)}
       style={{
         padding: "10px 16px",
         borderRadius: 999,
         border: `1px solid ${border}`,
-        background: "rgba(0,0,0,0.26)",
+        background: hover ? "rgba(0,0,0,0.34)" : "rgba(0,0,0,0.26)",
         color: text,
         cursor: "pointer",
         fontSize: 14,
         backdropFilter: "blur(10px)",
+        transform: down ? "translateY(0px) scale(0.99)" : hover ? "translateY(-1px)" : "translateY(0px)",
+        boxShadow: hover
+          ? "0 12px 34px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.10)"
+          : "0 10px 28px rgba(0,0,0,0.22)",
+        transition:
+          "transform 140ms ease, box-shadow 140ms ease, background 140ms ease, border-color 140ms ease",
       }}
     >
       {children}
     </button>
   );
 }
+
 
 function SparkleBurst() {
   const dots = Array.from({ length: 10 });
