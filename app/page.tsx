@@ -915,7 +915,7 @@ export default function Home() {
                 padding: "10px 0 16px",
               }}
             >
-              built as a joke. unless it works. then it’s a case study.
+              i hope this works.
             </section>
           </>
         )}
