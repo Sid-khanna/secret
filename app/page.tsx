@@ -258,7 +258,7 @@ export default function Home() {
     body: [
       "talking to you is dangerously fun.",
       "like… blink-and-it’s-been-hours fun.",
-      "and yes: her eyes are an unfair advantage and her smile is a reset button.",
+      "and yes: your eyes are an unfair advantage and your smile is a reset button.",
       
       "disclaimer: this is not me being dramatic (ok maybe a bit).",
       "i’m just leaning into the fact that you’re cute.",
