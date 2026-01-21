@@ -20,6 +20,7 @@ const dateOptions = [
   "rec room",
   "bowling",
   "mini golf",
+  "bouldering (free visitor pass)"
 ] as const;
 
 type DateOption = (typeof dateOptions)[number];
@@ -38,6 +39,7 @@ const dateDescriptions: Record<DateOption, string> = {
   "rec room": "games + prizes + me trying to win you something stupid and cute.",
   "bowling": "you look cute when you’re locked in. i’m prepared to be humbled.",
   "mini golf": "flirting disguised as sports. the score is fake anyway.",
+  "bouldering (free visitor pass)": "i will probably cling to you for support. hope that’s ok.",
 };
 
 
